@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <PublishAot>true</PublishAot>
+        <SelfContained>true</SelfContained>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <InvariantGlobalization>true</InvariantGlobalization>
+        <OutputType>Library</OutputType>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+        <AssemblyName>version</AssemblyName>
+    </PropertyGroup>
+
+    <ItemGroup Condition="'$(RuntimeIdentifier.StartsWith(`win-`))' == 'true'">
+        <LinkerArg Include="/DEF:Exports.def" />
+    </ItemGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' != 'Debug'">
+        <DebugSymbols>false</DebugSymbols>
+        <DebugType>none</DebugType>
+    </PropertyGroup>
+
+    <Target Name="PublishAsBuildAfterTarget" AfterTargets="Build" DependsOnTargets="Publish" />
+
+    <Target Condition="'$(RuntimeIdentifier.StartsWith(`win-`))' == 'true'" Name="RenameBinary" AfterTargets="Build">
+        <Move SourceFiles="$(PublishDir)/$(TargetName).dll" DestinationFiles="$(PublishDir)/version.dll" />
+    </Target>
+
+</Project> 
